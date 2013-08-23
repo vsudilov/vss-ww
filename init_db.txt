@@ -1,0 +1,18 @@
+CREATE ROLE ww_user;
+ALTER ROLE ww_user WITH PASSWORD 'dl3ldn3sa9kd323D4nBNe_3-';
+ALTER ROLE ww_user WITH LOGIN;
+CREATE DATABASE "main" WITH OWNER ww_user;
+\connect main;
+CREATE TABLE users (
+  id            serial PRIMARY KEY,
+  username      varchar(20),
+  sha1          varchar(50)
+);
+CREATE TABLE weights (
+  id            serial PRIMARY KEY,
+  timestamp     timestamp,
+  weight        real,     
+  unit          varchar(10)
+);
+GRANT ALL PRIVILEGES ON users,weights TO ww_user;
+INSERT INTO users (username, sha1) VALUES ('vsudilov','29f923606f2973a4641dd9d592970cf2716e6380');

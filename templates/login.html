@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body{background-color: #F7F7F6;}
+ .login{padding-top: 65px;}
+ .center{float: none; margin-left: auto; margin-right: auto;}
+</style>
+<div class="container login">
+    <div class="row ">
+        <div class="center span4 well">
+            <legend>Please Sign In</legend>
+            <div class="alert alert-error">
+                <a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
+            </div>
+            <form method="POST" action="" accept-charset="UTF-8" class="form-horizontal">
+            <input type="text" id="username" class="span4" name="username" placeholder="Username" autofocus/>
+            <input type="password" id="password" class="span4" name="password" placeholder="Password" />
+            <button type="submit" name="submit" class="btn btn-primary btn-block">Sign in</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
