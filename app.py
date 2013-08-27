@@ -98,7 +98,12 @@ def home():
     insertWeight(request.form['weight'],request.form['units'])
     context.update({'data':queryWeights()})
     return render_template('home.html',**context)
-  
+
+@app.route('/logout')
+def logout():
+  session['user'] = None
+  return redirect(url_for('login'))
+
 if __name__ == '__main__':
   app.config['DEBUG'] = True
   app.run(host='0.0.0.0')
