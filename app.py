@@ -18,7 +18,7 @@ except ImportError:
   password=url.password
   host=url.hostname
   port=url.port
-  SQLALCHEMY_DATABASE_URI = 'postgres://%s:%s:%s@%s/%s' % (url.username,url.password,url.hostname,url.port,database)
+  SQLALCHEMY_DATABASE_URI = 'postgres://%s:%s@%s:%s/%s' % (url.username,url.password,url.hostname,url.port,database)
 
 
 app = Flask(__name__)
