@@ -4,15 +4,13 @@ from flask import Flask, render_template, request, session, redirect, url_for, e
 from functools import wraps
 from flask.ext.sqlalchemy import SQLAlchemy
 import json
-data = [{"x":1,"y":1,"z":3},{"x":2,"y":4,"z":4},{"x":3,"y":7,"z":5}]
-
-
-
+import time
+from keys import SQLALCHEMY_DATABASE_URI, APP_SECRET_KEY
 
 app = Flask(__name__)
-app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tjxcxreyeqogcl:sA1eX2Y5XwGBirlhg8elgZW-kt@ec2-54-221-236-4.compute-1.amazonaws.com/dfstbp77qj18nk'
-app.secret_key = 'Z>\xed\x81\xfeI\x8b\xfeh\x15\x13\x0e\x02#\tI \x94r\xbd\xc0\x84\xcc\xbc'
+app.config['DEBUG'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+app.secret_key = APP_SECRET_KEY
 session = {'user':None}
 db = SQLAlchemy(app)
 
@@ -59,14 +57,17 @@ def login():
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
+  context = {'user':request.user}
   if request.method == 'GET':
-    context = {'data':json.dumps(data)}
+    context.update({'data':json.dumps(data)})
     return render_template('home.html',**context)
   if request.method == 'POST':
-    context = {'data':json.dumps(data)}
+    context.update({'data':json.dumps(data)})
     return render_template('home.html',**context)
   
 if __name__ == '__main__':
+  app.config['DEBUG'] = True
+  app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ww-user:dl3ldn3sa9kd323D4nBNe_3-@localhost/main'
   app.run(host='0.0.0.0')
 
 
