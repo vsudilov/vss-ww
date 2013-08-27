@@ -5,12 +5,25 @@ from functools import wraps
 from flask.ext.sqlalchemy import SQLAlchemy
 import json
 import datetime
-from keys import SQLALCHEMY_DATABASE_URI, APP_SECRET_KEY
+try:
+  #localhost connection
+  from keys import SQLALCHEMY_DATABASE_URI
+except ImportError:
+  #production connection
+  import urlparse
+  urlparse.uses_netloc.append("postgres")
+  url = urlparse.urlparse(os.environ["DATABASE_URL"])
+  database=url.path[1:]
+  user=url.username
+  password=url.password
+  host=url.hostname
+  port=url.port
+  SQLALCHEMY_DATABASE_URI = 'postgres://%s:%s:%s@%s/%s' % (url.username,url.password,url.hostname,url.port,database)
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-app.secret_key = APP_SECRET_KEY
 session = {'user':None}
 db = SQLAlchemy(app)
 
