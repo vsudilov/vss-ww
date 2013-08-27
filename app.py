@@ -12,7 +12,7 @@ except ImportError:
   #production connection
   import urlparse
   urlparse.uses_netloc.append("postgres")
-  url = urlparse.urlparse(os.environ["DATABASE_URL"])
+  url = urlparse.urlparse(os.environ["HEROKU_POSTGRESQL_BRONZE_URL"])
   database=url.path[1:]
   user=url.username
   password=url.password
