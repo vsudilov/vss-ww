@@ -11,7 +11,7 @@ data = [{"x":1,"y":1,"z":3},{"x":2,"y":4,"z":4},{"x":3,"y":7,"z":5}]
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ww_user:dl3ldn3sa9kd323D4nBNe_3-@localhost/main'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tjxcxreyeqogcl:sA1eX2Y5XwGBirlhg8elgZW-kt@ec2-54-221-236-4.compute-1.amazonaws.com/dfstbp77qj18nk'
 app.secret_key = 'Z>\xed\x81\xfeI\x8b\xfeh\x15\x13\x0e\x02#\tI \x94r\xbd\xc0\x84\xcc\xbc'
 session = {'user':None}
 db = SQLAlchemy(app)
