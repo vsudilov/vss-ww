@@ -6,13 +6,16 @@ CREATE DATABASE "main" WITH OWNER ww_user;
 CREATE TABLE users (
   id            serial PRIMARY KEY,
   username      varchar(20),
-  sha1          varchar(50)
+  sha1          varchar(50),
+  UNIQUE(username)
 );
 CREATE TABLE weights (
   id            serial PRIMARY KEY,
   timestamp     timestamp,
   weight        real,     
-  unit          varchar(10)
+  unit          varchar(10),
+  username      varchar(20) references users(username)
 );
 GRANT ALL PRIVILEGES ON users,weights TO ww_user;
 INSERT INTO users (username, sha1) VALUES ('vsudilov','29f923606f2973a4641dd9d592970cf2716e6380');
+INSERT INTO weights (timestamp,weight,unit,username) VALUES ('1999-01-08 04:05:06',-99,'kgs','vsudilov');

@@ -18,12 +18,12 @@ function draw(data) {
        .attr("stroke", "black")
        .attr("fill", "rgb(230,230,230)");
 
-  var xMin = d3.min(data, function(d) { return Number(d.x); });
-  var xMax = d3.max(data, function(d) { return Number(d.x); });
-  var yMin = d3.min(data, function(d) { return Number(d.y); });
-  var yMax = d3.max(data, function(d) { return Number(d.y); });
+  var xMin = data[0].x
+  var xMax = data[data.length-1].x
+  var yMin = d3.min(data, function(d) { return d.y; });
+  var yMax = d3.max(data, function(d) { return d.y; });
 
-  var xScale = d3.scale.linear().domain([xMin, xMax]).range([pad.left*2, w-pad.right*2]);
+  var xScale = d3.time.scale().domain([xMin, xMax]).range([pad.left*2, w-pad.right*2]);
   var yScale = d3.scale.linear().domain([yMin, yMax]).range([h-pad.bottom*2, pad.top*2]);
 
   var circles = svg.selectAll("circle")
@@ -34,12 +34,15 @@ function draw(data) {
                           .attr("cy", function(d) { return yScale(d.y); })
                           .attr("r", 5)
                           .attr("opacity", 0.8)
-                          .attr("fill", function(d) { return ['blue', 'green', 'red'][d.z-1]; })
-                        .on("mouseover", function() { d3.select(this).attr("r", 10) })
+                          //.attr("fill", function(d) { return ['blue', 'green', 'red'][d.z-1]; })
+                        .on("mouseover", function() { d3.select(this).attr("r", 10)})
                         .on("mouseout", function() { d3.select(this).attr("r", 5) });
 }
 $(document).ready(function () {
   d = {{data|safe}}
+  $.each(d,function (index,value) {
+    value.x = new Date(value.x)
+  });
   console.log(d)
   draw(d)
 });
@@ -51,7 +54,7 @@ $(document).ready(function () {
     <form class="form-horizontal" method="POST">
     <fieldset>
     <!-- Form Name -->
-    <legend></legend>
+    <legend>History for {{user}}</legend>
     <!-- Text input-->
     <div class="control-group">
       <label class="control-label" for="weight"></label>

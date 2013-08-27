@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, e
 from functools import wraps
 from flask.ext.sqlalchemy import SQLAlchemy
 import json
-import time
+import datetime
 from keys import SQLALCHEMY_DATABASE_URI, APP_SECRET_KEY
 
 app = Flask(__name__)
@@ -24,7 +24,12 @@ class Weights(db.Model):
   timestamp = db.Column(db.TIMESTAMP)
   weight = db.Column(db.Float)
   unit = db.Column(db.String(255))
-
+  username = db.Column(db.String(255),db.ForeignKey("users.username"))
+  def __init__(self,ts,w,u,un):
+    self.timestamp = ts
+    self.weight = w
+    self.unit = u
+    self.username = un
 
 def login_required(f):
   @wraps(f)
@@ -43,6 +48,21 @@ def validateUser(u,p):
   except:
     return False
 
+def queryWeights():
+  weights = Weights.query.filter_by(username=session['user']).order_by(Weights.timestamp.asc())
+  data = []
+  for w in weights:
+    data.append({'x':w.timestamp,'y':w.weight})
+  dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
+  return json.dumps(data,default=dthandler)
+
+def insertWeight(weight, unit):
+  now = datetime.datetime.isoformat(datetime.datetime.now())
+  row = Weights(now,weight,unit,session['user'])
+  db.session.add(row)
+  db.session.commit()
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
@@ -57,17 +77,17 @@ def login():
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-  context = {'user':request.user}
+  context = {'user':session['user']}
   if request.method == 'GET':
-    context.update({'data':json.dumps(data)})
+    context.update({'data':queryWeights()})
     return render_template('home.html',**context)
   if request.method == 'POST':
-    context.update({'data':json.dumps(data)})
+    insertWeight(request.form['weight'],request.form['units'])
+    context.update({'data':queryWeights()})
     return render_template('home.html',**context)
   
 if __name__ == '__main__':
   app.config['DEBUG'] = True
-  app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ww-user:dl3ldn3sa9kd323D4nBNe_3-@localhost/main'
   app.run(host='0.0.0.0')
 
 
