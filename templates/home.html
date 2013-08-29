@@ -1,10 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
+
+<style>
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+svg {
+    margin-left: 50px;
+}
+</style>
 <script type="text/javascript">
 function draw(data) {
 
   var w=800, h=400;
-  var pad = {left: 20, right: 20, top: 20, bottom: 20};
+  var pad = {left: 40, right: 20, top: 20, bottom: 20};
 
   var svg = d3.select("body")
                 .append("svg")
@@ -14,9 +32,11 @@ function draw(data) {
   svg.append("rect")
        .attr("x", pad.left).attr("y",pad.top)
        .attr("width", w-(pad.left+pad.right))
+       //.attr("width", w)
        .attr("height",h-(pad.top+pad.bottom))
+       //.attr("height",h)
        .attr("stroke", "black")
-       .attr("fill", "rgb(230,230,230)");
+       .attr("fill", "rgb(221,237,237)");
 
   var xMin = data[0].x
   var xMax = data[data.length-1].x
@@ -25,6 +45,16 @@ function draw(data) {
 
   var xScale = d3.time.scale().domain([xMin, xMax]).range([pad.left*2, w-pad.right*2]);
   var yScale = d3.scale.linear().domain([yMin, yMax]).range([h-pad.bottom*2, pad.top*2]);
+
+  var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .tickFormat(d3.time.format("%x"))
+                .ticks(5)
+                .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left");
 
   var circles = svg.selectAll("circle")
                       .data(data)
@@ -35,15 +65,28 @@ function draw(data) {
                           .attr("r", 5)
                           .attr("opacity", 0.8)
                           //.attr("fill", function(d) { return ['blue', 'green', 'red'][d.z-1]; })
-                        .on("mouseover", function() { d3.select(this).attr("r", 10)})
-                        .on("mouseout", function() { d3.select(this).attr("r", 5) });
+                        .on("mouseover", function() { d3.select(this).attr("r", 10) })
+                        .on("mouseout", function() { d3.select(this).attr("r", 5) })
+                        .append('svg:title')
+                        .text(function(d) { return d.y; });
+
+
+  svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + (h - pad.bottom) + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(" + pad.left + ",0)")
+      .call(yAxis);
+
 }
 $(document).ready(function () {
   d = {{data|safe}}
   $.each(d,function (index,value) {
     value.x = new Date(value.x)
   });
-  console.log(d)
   draw(d)
 });
 </script>
