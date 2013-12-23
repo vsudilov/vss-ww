@@ -71,6 +71,9 @@ def queryWeights():
 
 def insertWeight(weight, unit):
   now = datetime.datetime.isoformat(datetime.datetime.now())
+  if unit =="lbs": #Only "kgs" will be in the database
+    unit = "kgs"
+    weight*=2.2
   row = Weights(now,weight,unit,session['user'])
   db.session.add(row)
   db.session.commit()
